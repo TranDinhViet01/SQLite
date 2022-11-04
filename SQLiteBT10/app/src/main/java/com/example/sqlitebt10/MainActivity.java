@@ -22,14 +22,14 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     SQLiteDatabase database;
     Button CT, CP,InsertCP,ShowCP;
-    EditText txt,txt3,txt2;
-    TextView tittle;
-    ListView lv;
-    ArrayList<String> ds;
-    ArrayAdapter adapter;
+    EditText txt_357,txt2_357,txt3_357;
+    TextView tittle_357;
+    ListView lv_357;
+    ArrayList<String> ds_357;
+    ArrayAdapter adapter_357;
     int stop = 0;
     Cursor c;
-    String table = "SinhVien";
+    String table_357 = "SinhVien";
     String row ;
     @SuppressLint("MissingInflatedId")
     @Override
@@ -43,41 +43,42 @@ public class MainActivity extends AppCompatActivity {
         CP = findViewById(R.id.CreateCP);
         InsertCP = findViewById(R.id.InsertCP);
         ShowCP = findViewById(R.id.ShowCP);
-        txt = findViewById(R.id.txtEdit);
-        txt2 = findViewById(R.id.txtEdit2);
-        txt3 = findViewById(R.id.txtEdit3);
-        tittle = findViewById(R.id.title);
+        txt_357 = findViewById(R.id.txtEdit);
+        txt2_357 = findViewById(R.id.txtEdit2);
+        txt3_357 = findViewById(R.id.txtEdit3);
+        tittle_357 = findViewById(R.id.title);
 
-        if(HasTable())
-            txt.setText("Has Not Table");
+        if(Hastable_357())
+            txt_357.setText("Has Not table_357");
         doLoadCP();
 
         CT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                table = "SinhVien";
+                table_357 = "SinhVien";
                 doLoadCP();
-                tittle.setText("MaSV - Ten SV");
-                txt.setHint("Tên Sinh Viên");
-                txt2.setVisibility(view.GONE);
-                txt3.setVisibility(view.GONE);
+                tittle_357.setText("MaSV - Ten SV");
+                txt3_357.setHint("Tên Sinh Viên");
+                txt2_357.setVisibility(view.GONE);
+                txt_357.setHint("Mã Sinh Viên");
             }
         });
         CP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                table = "Lop";
+                table_357 = "Lop";
                 doLoadCP();
-                tittle.setText("MaL - Khoa - TenGV - MaSV");
-                txt.setHint("Ma Sinh Viên");
-                txt2.setVisibility(view.VISIBLE);
-                txt3.setVisibility(view.VISIBLE);
+                tittle_357.setText("MaL - Khoa - TenGV - MaSV");
+                txt3_357.setHint("Tên Giáo Viên");
+                txt2_357.setVisibility(view.VISIBLE);
+                txt_357.setHint("Mã Sinh Viên");
             }
         });
         InsertCP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                doInsertCP();
+                if(doInsertCP()== false)
+                    Toast.makeText(MainActivity.this, "failed", Toast.LENGTH_LONG).show();
             }
         });
         ShowCP.setOnClickListener(new View.OnClickListener() {
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                 Resert();
             }
         });
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lv_357.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(stop == 0) {
@@ -112,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                     stop = 0;
             }
         });
-        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        lv_357.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 stop = 1;
@@ -137,10 +138,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    public boolean HasTable(){
+    public boolean Hastable_357(){
         try{
-            doCreateTableCT();
-            doCreateTableCP();
+            doCreatetable_357CT();
+            doCreatetable_357CP();
             return true;
         } catch (Exception e) {
             return false;
@@ -150,8 +151,8 @@ public class MainActivity extends AppCompatActivity {
     public void Resert(){
         doDeleteDb();
         doCreateDb();
-        doCreateTableCP();
-        doCreateTableCT();
+        doCreatetable_357CP();
+        doCreatetable_357CT();
         doLoadCP();
     }
 
@@ -171,105 +172,111 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // Create table
-    public void doCreateTableCP() {
+    // Create table_357
+    public void doCreatetable_357CP() {
         String sql;
-        sql = "CREATE TABLE Lop (" +
+        sql = "CREATE table Lop (" +
                 "maL TEXT primary key," +
                 "khoa TEXT," +
                 "tenGV TEXT," +
                 "maSV TEXT)";
         database.execSQL(sql);
     }
-    public void doCreateTableCT() {
+    public void doCreatetable_357CT() {
         String sql;
-        sql = " CREATE TABLE SinhVien (" +
+        sql = " CREATE table SinhVien (" +
                 "maSV TEXT primary key," +
                 "tenSV TEXT)";
         database.execSQL(sql);
     }
 
-    // Insert - Update - Delete table
+    // Insert - Update - Delete table_357
 
-    public void doInsertCP() {
-        ContentValues values = new ContentValues();
-        if(table.equals("Lop")){
-            values.put("maL", "M0" + row);
-            values.put("khoa", txt.getText().toString());
-            values.put("tenGV",txt2.getText().toString());
-            values.put("maSV", txt.getText().toString());
+    public boolean doInsertCP() {
+        try{
+            ContentValues values = new ContentValues();
+            if(table_357.equals("Lop")){
+                values.put("maL", "M0" + row);
+                values.put("khoa", txt2_357.getText().toString());
+                values.put("tenGV",txt3_357.getText().toString());
+                values.put("maSV", txt_357.getText().toString());
+            }
+            else{
+                values.put("maSV", txt_357.getText().toString());
+                values.put("tenSV",txt3_357.getText().toString());
+            }
+            database.insert(table_357, null, values);
+            txt_357.setText("");
+            txt2_357.setText("");
+            txt3_357.setText("");
+            doLoadCP();
+            return true;
         }
-        else{
-            values.put("maSV", "m0" + row);
-            values.put("tenSV", txt.getText().toString());
+        catch (Exception e) {
+            return false;
         }
-        database.insert(table, null, values);
-        txt.setText("");
-        txt2.setText("");
-        txt3.setText("");
-        doLoadCP();
     }
 
     public void doUpdateCP(int so) {
         ContentValues values = new ContentValues();
-        if(table.equals("Lop")){
-            values.put("khoa", txt2.getText().toString());
-            values.put("tenGV",txt3.getText().toString());
-            values.put("maSV",txt.getText().toString());
+        if(table_357.equals("Lop")){
+            values.put("khoa", txt2_357.getText().toString());
+            values.put("tenGV",txt3_357.getText().toString());
+            values.put("maSV",txt_357.getText().toString());
         }
         else{
-            values.put("tenSV",txt.getText().toString());
+            values.put("tenSV",txt3_357.getText().toString());
         }
         String text = getMa(so);
-        if(table.equals("Lop"))
-            database.update(table,values,"maL=?",new String[]{text});
+        if(table_357.equals("Lop"))
+            database.update(table_357,values,"maL=?",new String[]{text});
         else
-            database.update(table,values,"maSV=?",new String[]{text});
+            database.update(table_357,values,"maSV=?",new String[]{text});
         doLoadCP();
     }
     public void doDeleteCP(int so) {
-        c = database.query(table,null,null,null,null,null,null);
+        c = database.query(table_357,null,null,null,null,null,null);
         c.moveToPosition(so);
         String text = c.getString(0);
-        if(table.equals("Lop"))
-            database.delete(table,"maL=?",new String[]{text});
+        if(table_357.equals("Lop"))
+            database.delete(table_357,"maL=?",new String[]{text});
         else
-            database.delete(table,"maSV=?",new String[]{text});
+            database.delete(table_357,"maSV=?",new String[]{text});
         doLoadCP();
     }
 
-    // Select Table
+    // Select table_357
 
     public String getMa(int so){
-        c = database.query(table,null,null,null,null,null,null);
+        c = database.query(table_357,null,null,null,null,null,null);
         c.moveToPosition(so);
         String text = c.getString(0);
         return text;
     }
 
     public void doLoadCP() {
-        ds.clear();
-        c = database.query(table,null,null,null,null,null,null);
+        ds_357.clear();
+        c = database.query(table_357,null,null,null,null,null,null);
         c.moveToFirst();
         String data;
         while(c.isAfterLast()==false)
         {
             data = "";
             data+= c.getString(0) + " - " + c.getString(1);
-            if(table.equals("Lop"))
+            if(table_357.equals("Lop"))
                 data+= " - " +  c.getString(2)
                         + " - " + c.getString(3);
-            ds.add(data);
+            ds_357.add(data);
             c.moveToNext();
         }
-        row = "" + (ds.size() + 1);
-        adapter.notifyDataSetChanged();
+        row = "" + (ds_357.size() + 1);
+        adapter_357.notifyDataSetChanged();
         c.close();
     }
     public void setList(){
-        lv = findViewById(R.id.ListViewFie);
-        ds = new ArrayList<>();
-        adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1,ds);
-        lv.setAdapter(adapter);
+        lv_357 = findViewById(R.id.ListViewFie);
+        ds_357 = new ArrayList<>();
+        adapter_357 = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1,ds_357);
+        lv_357.setAdapter(adapter_357);
     }
 }

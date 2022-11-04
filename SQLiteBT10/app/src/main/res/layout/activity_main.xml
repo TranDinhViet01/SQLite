@@ -31,7 +31,7 @@
         android:layout_height="wrap_content">
         <EditText
             android:id="@+id/txtEdit"
-            android:hint="Tên Sinh Viên"
+            android:hint="Mã Sinh Viên"
             android:layout_marginLeft="5dp"
             android:layout_width="450px"
             android:layout_height="50dp"/>
@@ -56,10 +56,9 @@
         android:layout_height="wrap_content">
         <EditText
             android:id="@+id/txtEdit3"
-            android:visibility="gone"
             android:layout_marginLeft="5dp"
             android:layout_width="450px"
-            android:hint="Tên Giáo Viên"
+            android:hint="Tên Sinh Viên"
             android:layout_height="50dp"/>
     </LinearLayout>
     <LinearLayout
