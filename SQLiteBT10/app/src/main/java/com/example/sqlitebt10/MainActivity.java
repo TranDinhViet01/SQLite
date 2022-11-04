@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -21,13 +22,14 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     SQLiteDatabase database;
     Button CT, CP,InsertCP,ShowCP;
-    EditText txt,txt2;
+    EditText txt,txt3,txt2;
+    TextView tittle;
     ListView lv;
     ArrayList<String> ds;
     ArrayAdapter adapter;
     int stop = 0;
     Cursor c;
-    String table = "Computer";
+    String table = "SinhVien";
     String row ;
     @SuppressLint("MissingInflatedId")
     @Override
@@ -36,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setList();
         doCreateDb();
-        doLoadCP();
 
         CT = findViewById(R.id.CreateCT);
         CP = findViewById(R.id.CreateCP);
@@ -44,21 +45,33 @@ public class MainActivity extends AppCompatActivity {
         ShowCP = findViewById(R.id.ShowCP);
         txt = findViewById(R.id.txtEdit);
         txt2 = findViewById(R.id.txtEdit2);
+        txt3 = findViewById(R.id.txtEdit3);
+        tittle = findViewById(R.id.title);
+
+        if(HasTable())
+            txt.setText("Has Not Table");
+        doLoadCP();
 
         CT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                table = "Category";
+                table = "SinhVien";
                 doLoadCP();
+                tittle.setText("MaSV - Ten SV");
+                txt.setHint("Tên Sinh Viên");
                 txt2.setVisibility(view.GONE);
+                txt3.setVisibility(view.GONE);
             }
         });
         CP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                table = "Computer";
+                table = "Lop";
                 doLoadCP();
+                tittle.setText("MaL - Khoa - TenGV - MaSV");
+                txt.setHint("Ma Sinh Viên");
                 txt2.setVisibility(view.VISIBLE);
+                txt3.setVisibility(view.VISIBLE);
             }
         });
         InsertCP.setOnClickListener(new View.OnClickListener() {
@@ -124,6 +137,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    public boolean HasTable(){
+        try{
+            doCreateTableCT();
+            doCreateTableCP();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public void Resert(){
         doDeleteDb();
         doCreateDb();
@@ -131,79 +154,99 @@ public class MainActivity extends AppCompatActivity {
         doCreateTableCT();
         doLoadCP();
     }
+
+
+    //Database
     public void doCreateDb() {
-        database = openOrCreateDatabase("qlComputer.db", MODE_PRIVATE,null);
+        database = openOrCreateDatabase("qlSinhVien.db", MODE_PRIVATE,null);
     }
-    // Create Database và table
+
     public void doDeleteDb() {
         String msg;
-        if (deleteDatabase("qlComputer.db"))
-            msg = "Delete database [qlComputer.db] is successful";
+        if (deleteDatabase("qlSinhVien.db"))
+            msg = "Delete database [qlSinhVien.db] is successful";
         else
-            msg = "Delete database [qlComputer.db] is failed";
+            msg = "Delete database [qlSinhVien.db] is failed";
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
+
+    // Create table
     public void doCreateTableCP() {
         String sql;
-        sql = "CREATE TABLE Computer (" +
-                "maCP TEXT primary key," +
-                "tenCP TEXT," +
-                "maCT TEXT)";
+        sql = "CREATE TABLE Lop (" +
+                "maL TEXT primary key," +
+                "khoa TEXT," +
+                "tenGV TEXT," +
+                "maSV TEXT)";
+        database.execSQL(sql);
+    }
+    public void doCreateTableCT() {
+        String sql;
+        sql = " CREATE TABLE SinhVien (" +
+                "maSV TEXT primary key," +
+                "tenSV TEXT)";
         database.execSQL(sql);
     }
 
-    public void doCreateTableCT() {
-        String sql;
-        sql = " CREATE TABLE Category (" +
-                "maCT TEXT primary key," +
-                "tenCT TEXT)";
-        database.execSQL(sql);
-    }
-    public void doDeleteCP(int so) {
-        c = database.query(table,null,null,null,null,null,null);
-        c.moveToPosition(so);
-        String text = c.getString(0);
-        if(table.equals("Computer"))
-            database.delete(table,"maCP=?",new String[]{text});
-        else
-            database.delete(table,"maCT=?",new String[]{text});
-        doLoadCP();
-    }
+    // Insert - Update - Delete table
 
     public void doInsertCP() {
         ContentValues values = new ContentValues();
-        if(table.equals("Computer")){
-            values.put("maCP", "M0" + row);
-            values.put("tenCP", txt.getText().toString());
-            values.put("maCT",txt2.getText().toString());
+        if(table.equals("Lop")){
+            values.put("maL", "M0" + row);
+            values.put("khoa", txt.getText().toString());
+            values.put("tenGV",txt2.getText().toString());
+            values.put("maSV", txt.getText().toString());
         }
         else{
-            values.put("maCT", "m0" + row);
-            values.put("tenCT", txt.getText().toString());
+            values.put("maSV", "m0" + row);
+            values.put("tenSV", txt.getText().toString());
         }
         database.insert(table, null, values);
+        txt.setText("");
+        txt2.setText("");
+        txt3.setText("");
         doLoadCP();
     }
 
     public void doUpdateCP(int so) {
         ContentValues values = new ContentValues();
-        if(table.equals("Computer")){
-            values.put("tenCP", txt.getText().toString());
-            values.put("maCT",txt2.getText().toString());
+        if(table.equals("Lop")){
+            values.put("khoa", txt2.getText().toString());
+            values.put("tenGV",txt3.getText().toString());
+            values.put("maSV",txt.getText().toString());
         }
         else{
-            values.put("tenCT", txt.getText().toString());
+            values.put("tenSV",txt.getText().toString());
         }
+        String text = getMa(so);
+        if(table.equals("Lop"))
+            database.update(table,values,"maL=?",new String[]{text});
+        else
+            database.update(table,values,"maSV=?",new String[]{text});
+        doLoadCP();
+    }
+    public void doDeleteCP(int so) {
         c = database.query(table,null,null,null,null,null,null);
         c.moveToPosition(so);
         String text = c.getString(0);
-        if(table.equals("Computer"))
-            database.update(table,values,"maCP=?",new String[]{text});
+        if(table.equals("Lop"))
+            database.delete(table,"maL=?",new String[]{text});
         else
-            database.update(table,values,"maCT=?",new String[]{text});
+            database.delete(table,"maSV=?",new String[]{text});
         doLoadCP();
     }
+
+    // Select Table
+
+    public String getMa(int so){
+        c = database.query(table,null,null,null,null,null,null);
+        c.moveToPosition(so);
+        String text = c.getString(0);
+        return text;
+    }
+
     public void doLoadCP() {
         ds.clear();
         c = database.query(table,null,null,null,null,null,null);
@@ -213,8 +256,9 @@ public class MainActivity extends AppCompatActivity {
         {
             data = "";
             data+= c.getString(0) + " - " + c.getString(1);
-            if(table.equals("Computer"))
-                data+= " - " +  c.getString(2);
+            if(table.equals("Lop"))
+                data+= " - " +  c.getString(2)
+                        + " - " + c.getString(3);
             ds.add(data);
             c.moveToNext();
         }

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -15,12 +14,12 @@
             android:id="@+id/CreateCT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Category"/>
+            android:text="Sinh Viên"/>
         <Button
             android:id="@+id/CreateCP"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Computer"/>
+            android:text="Lớp"/>
         <Button
             android:id="@+id/ShowCP"
             android:layout_width="wrap_content"
@@ -32,13 +31,19 @@
         android:layout_height="wrap_content">
         <EditText
             android:id="@+id/txtEdit"
+            android:hint="Tên Sinh Viên"
+            android:layout_marginLeft="5dp"
             android:layout_width="450px"
-            android:layout_height="wrap_content"/>
+            android:layout_height="50dp"/>
         <EditText
             android:id="@+id/txtEdit2"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="-10dp"
             android:visibility="gone"
+            android:hint="Khoa"
+
             android:layout_width="300px"
-            android:layout_height="wrap_content"/>
+            android:layout_height="50dp"/>
         <Button
             android:layout_marginLeft="20dp"
             android:id="@+id/InsertCP"
@@ -46,7 +51,28 @@
             android:layout_height="wrap_content"
             android:text="Insert"/>
     </LinearLayout>
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/txtEdit3"
+            android:visibility="gone"
+            android:layout_marginLeft="5dp"
+            android:layout_width="450px"
+            android:hint="Tên Giáo Viên"
+            android:layout_height="50dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MaSV - Ten SV"
+            android:textSize="18dp"
+            android:layout_margin="5dp"/>
+    </LinearLayout>
     <ListView
         android:id="@+id/ListViewFie"
         android:layout_width="match_parent"
